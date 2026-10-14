@@ -13,7 +13,7 @@ function AboutPage() {
             <h2>About Aurora CS Course Scheduler</h2>
 
             <p>
-                <strong>Author(s)</strong> Lesly Ortiz
+                <strong>Author(s)</strong> Lesly Ortiz and Justin Wedeen
             </p>
 
             <p>
