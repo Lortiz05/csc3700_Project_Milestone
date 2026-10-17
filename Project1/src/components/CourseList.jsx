@@ -1,18 +1,16 @@
 
-function CourseList({ courses = [] }) {
+function CourseList({ courses = []}) {
     // Look up a course by its ID so we can display its course number
-    const getPrerequisiteNumbers = (prerequisites) => {
+    function getPrerequisiteNumbers (prerequisites = []) {
         if (!prerequisites || prerequisites.length === 0) {
             return 'None';
         }
-
-        return prerequisites
-            .map((id) => {
-                const course = courses.find((item) => item.id === id);
+        return prerequisites.map((id) => {
+                let course = courses.find((item) => item.id === id.toString());
                 return course ? course.number : `Unknown (${id})`;
             })
             .join(', ');
-    };
+    }
 
     return (
         <div>
