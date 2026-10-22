@@ -97,7 +97,7 @@ p {
 
 code,
 .counter {
-  font-family: var(--mono);
+  font-family: var(--mono), serif;
   display: inline-flex;
   border-radius: 4px;
   color: var(--text-h);
@@ -108,4 +108,34 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+/* Override Bootstrap's default blue progress bar */
+.progress > .progress-bar {
+  background-color: darkgreen !important;
+}
+
+/* Make course checkboxes larger and bolder PLUS
+ The more specific selector ".course-checkbox.form-check-input" helps
+ your styling take precedence over Bootstrap's default checkbox rules.*/
+.course-checkbox.form-check-input {
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 2px solid #343a40;
+  opacity: 1;
+  cursor: pointer;
+}
+
+.course-checkbox.form-check-input:checked {
+  background-color: #198754;
+  border-color: darkgreen;
+}
+
+.course-checkbox.form-check-input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.form-check-label {
+  margin-left: 0.35rem;
+  vertical-align: middle;
 }

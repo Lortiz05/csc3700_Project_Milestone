@@ -1,12 +1,13 @@
-import { useParams, Link } from 'react-router-dom';
+import {useParams, Link} from 'react-router-dom';
 import useFetch from '../hooks/useFetch';
+import {useState} from "react";
 
 function CourseCard() {
-    const { id } = useParams();
+    const {id} = useParams();
     const BASE_URL = import.meta.env.VITE_API_BASE_URL;
     const url = `${BASE_URL}/courses/${id}`;
 
-    const { data, error, isPending } = useFetch(url);
+    const {data, error, isPending} = useFetch(url);
 
     const course = data && !Array.isArray(data) ? data : null;
 
@@ -41,7 +42,7 @@ function CourseCard() {
 
                         <p>
                             <strong>Prerequisites:</strong>{' '}
-                            {course.prerequisites?.length
+                            {course.prerequisites.length
                                 ? course.prerequisites.join(', ')
                                 : 'None'}
                         </p>
