@@ -4,17 +4,17 @@ function ProgressSummary({ courses = [], completed = [] }) {
     ).length;
     const availableCount = courses.filter(
         course =>
-            !completed.includes(course.id) &&
+            !completed.includes(String(course.id)) &&
             course.prerequisites.every(
-                id => completed.includes(id)
+                id => completed.includes(String(id))
             )
     ).length;
 
     const lockedCount = courses.filter(
         course =>
-            !completed.includes(course.id) &&
+            !completed.includes(String(course.id)) &&
             !course.prerequisites.every(
-                id => completed.includes(id)
+                id => completed.includes(String(id))
             )
     ).length;
 

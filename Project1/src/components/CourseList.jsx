@@ -45,7 +45,7 @@ function CourseList({ courses = [], completed = [], onToggle }) {
                                 key={course.id}
                             >
                                 <div className="card h-100">
-                                    <div className="card-body">
+                                    <div className="card-body" style={{backgroundColor: isLocked ? '#808080' : "white"}}>
                                         <h5 className="card-title">
                                             {course.number}: {course.title}
                                         </h5>
@@ -79,7 +79,7 @@ function CourseList({ courses = [], completed = [], onToggle }) {
                                                 className="form-check-label"
                                                 htmlFor={`course-${course.id}`}
                                             >
-                                                Completed
+                                                {isCompleted ? "Completed" : isLocked ? "Locked" : "Incomplete"}
                                             </label>
                                         </div>
                                     </div>
