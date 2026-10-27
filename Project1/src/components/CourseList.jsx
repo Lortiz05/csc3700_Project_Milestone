@@ -36,19 +36,36 @@ function CourseList({ courses = [], completed = [], onToggle }) {
                                     id => String(id) === String(prerequisiteId)
                                 )
                         );
-
                         const isLocked = !isCompleted && !prerequisitesMet;
+                        const isAvailable = !isCompleted && prerequisitesMet;
 
                         return (
+
                             <div
                                 className="col-md-6 mb-4"
                                 key={course.id}
                             >
-                                <div className="card h-100">
-                                    <div className="card-body" style={{backgroundColor: isLocked ? 'grey' : isCompleted ? "green" : "white"}}>
+
+                                <div className="card h-100" style={{backgroundColor: isLocked ? 'lightgrey' : isCompleted ? "lightgreen" : "white"}}>
+                                    <div className='card-header'>
                                         <h5 className="card-title">
-                                            {course.number}: {course.title}
-                                        </h5>
+                                        {course.number}: {course.title}
+                                    </h5>
+                                        <span className={`badge ${isCompleted? 'bg-success-subtle': isAvailable
+                                            ? 'bg-primary'
+                                            : 'bg-secondary'
+                                        }`}>
+                                            {
+                                                isCompleted? 'Completed':
+                                                    isAvailable? 'Available':
+                                                        'Locked'
+                                            }
+
+                                        </span>
+                                    </div>
+
+                                    <div className="card-body">
+
 
                                         <p className="card-text">
                                             <strong>Credits:</strong> {course.credits}
@@ -64,7 +81,8 @@ function CourseList({ courses = [], completed = [], onToggle }) {
                                                 course.prerequisites
                                             )}
                                         </p>
-
+                                        </div>
+                                    <div className='card-footer text-body-secondary'>
                                         <div className="form-check">
                                             <input
                                                 className="form-check-input course-checkbox"
