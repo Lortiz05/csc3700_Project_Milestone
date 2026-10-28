@@ -1,3 +1,5 @@
+import {useState} from 'react';
+
 function CourseList({ courses = [], completed = [], onToggle }) {
 
     // Look up course numbers using prerequisite IDs
@@ -17,15 +19,35 @@ function CourseList({ courses = [], completed = [], onToggle }) {
         }).join(', ');
     }
 
+    const [activeFilter, setActiveFilter] = useState('All Courses');
+    const categories = ['All Courses', 'Completed Only', 'Remaining']
+    const filteredCourses = activeFilter === 'All Courses'
+        ? courses
+        : activeFilter === 'Completed Only' ? courses.filter(course => completed.includes(String(course.id))) : courses.filter(course => !completed.includes(String(course.id)));
+
     return (
+
         <div>
             <h2 className="mb-3">Computer Science Course Catalog</h2>
-
+            <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
+                {categories.map(category =>(
+                    <button key={category} onClick={() => setActiveFilter(category)} style={{
+                        padding: '8px 16px',
+                        cursor: 'pointer',
+                        backgroundColor: activeFilter === category ? '#0070f3' : '#f0f0f0',
+                        color: activeFilter === category ? '#fff' : '#000',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        fontWeight: activeFilter === category ? 'bold' : 'normal'
+                    }}>{category}</button>
+                ))}
+            </div>
             {courses.length === 0 ? (
                 <p>No courses were found.</p>
             ) : (
+
                 <div className="row">
-                    {courses.map((course) => {
+                    {filteredCourses.map((course) => {
                         const isCompleted = completed.some(
                             id => String(id) === String(course.id)
                         );
@@ -39,7 +61,10 @@ function CourseList({ courses = [], completed = [], onToggle }) {
                         const isLocked = !isCompleted && !prerequisitesMet;
                         const isAvailable = !isCompleted && prerequisitesMet;
 
+
                         return (
+
+
 
                             <div
                                 className="col-md-6 mb-4"
