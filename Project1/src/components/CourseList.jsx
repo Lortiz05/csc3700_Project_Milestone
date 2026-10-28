@@ -42,7 +42,7 @@ function CourseList({ courses = [], completed = [], onToggle }) {
                     }}>{category}</button>
                 ))}
             </div>
-            {courses.length === 0 ? (
+            {filteredCourses.length === 0 ? (
                 <p>No courses were found.</p>
             ) : (
 
