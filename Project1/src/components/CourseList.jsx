@@ -1,6 +1,6 @@
 import {useState} from 'react';
 
-function CourseList({ courses = [], completed = [], onToggle }) {
+function CourseList({courses = [], completed = [], onToggle}) {
 
     // Look up course numbers using prerequisite IDs
     function getPrerequisiteNumbers(prerequisites = []) {
@@ -20,28 +20,45 @@ function CourseList({ courses = [], completed = [], onToggle }) {
     }
 
     const [activeFilter, setActiveFilter] = useState('All Courses');
+    const [saveMessage, setSaveMessage] = useState('');
     const categories = ['All Courses', 'Completed Only', 'Remaining']
     const filteredCourses = activeFilter === 'All Courses'
         ? courses
         : activeFilter === 'Completed Only' ? courses.filter(course => completed.includes(String(course.id))) : courses.filter(course => !completed.includes(String(course.id)));
 
+    const saveProgress = () => {
+        localStorage.setItem('completedCourses', JSON.stringify(completed));
+        setSaveMessage('Progress saved.')
+    }
     return (
 
         <div>
-            <h2 className="mb-3">Computer Science Course Catalog</h2>
-            <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
-                {categories.map(category =>(
-                    <button key={category} onClick={() => setActiveFilter(category)} style={{
-                        padding: '8px 16px',
-                        cursor: 'pointer',
-                        backgroundColor: activeFilter === category ? '#0070f3' : '#f0f0f0',
-                        color: activeFilter === category ? '#fff' : '#000',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
-                        fontWeight: activeFilter === category ? 'bold' : 'normal'
-                    }}>{category}</button>
+            <div className='containB'>
+                {categories.map(category => (
+                    <button key={category} onClick={() => setActiveFilter(category)}
+                            className='btn'
+                            style={{
+                                cursor: 'pointer',
+                                backgroundColor: activeFilter === category ? '#0070f3' : '#f0f0f0',
+                                color: activeFilter === category ? '#fff' : '#000',
+                                fontWeight: activeFilter === category ? 'bold' : 'normal'
+                            }}>{category}</button>
                 ))}
+                <div style={{marginLeft: 'auto'}}>
+                    {saveMessage && (
+                        <text className="text-success mt-2">
+                            {saveMessage}
+                        </text>
+                    )}
+                </div>
+
+                <button className='btn btn-success' style={{marginLeft: 'auto'}}
+                        onClick={() => saveProgress()}
+                >Save
+                </button>
+
             </div>
+
             {filteredCourses.length === 0 ? (
                 <p>No courses were found.</p>
             ) : (
@@ -65,34 +82,36 @@ function CourseList({ courses = [], completed = [], onToggle }) {
                         return (
 
 
-
                             <div
                                 className="col-md-6 mb-4"
                                 key={course.id}
                             >
 
-                                <div className="card h-100" style={{backgroundColor: isLocked ? 'lightgrey' : isCompleted ? "lightgreen" : "white"}}>
-                                    <div className='card-header'>
-                                        <h5 className="card-title">
-                                        {course.number}: {course.title}
-                                    </h5>
-                                        <span className={`badge ${isCompleted? 'bg-success-subtle': isAvailable
+                                <div className="card h-100 border-3"
+                                     style={{
+                                         borderColor: isLocked ? 'darkgrey' : isCompleted ? "green" : isAvailable?"#2871D7": "white",
+                                         backgroundColor: isLocked?'lightgray': isCompleted? "#EBFBE9":"white"
+                                }}>
+                                    <div className='card-header d-flex justify-content-between align-items-center'>
+                                        <h5 className="card-title text-start">
+                                            {course.number}
+                                        </h5>
+                                        <span className={`badge ${isCompleted ? 'bg-success' : isAvailable
                                             ? 'bg-primary'
                                             : 'bg-secondary'
                                         }`}>
                                             {
-                                                isCompleted? 'Completed':
-                                                    isAvailable? 'Available':
-                                                        'Locked'
+                                                isCompleted ? '✅Completed' :
+                                                    isAvailable ? 'Available' :
+                                                        '🔒Locked'
                                             }
-
                                         </span>
                                     </div>
 
-                                    <div className="card-body">
+                                    <div className="card-body text-start">
 
-
-                                        <p className="card-text">
+                                        <h4>{course.title}</h4>
+                                        <p className="card-text text-body-secondary">
                                             <strong>Credits:</strong> {course.credits}
                                         </p>
 
@@ -106,7 +125,7 @@ function CourseList({ courses = [], completed = [], onToggle }) {
                                                 course.prerequisites
                                             )}
                                         </p>
-                                        </div>
+                                    </div>
                                     <div className='card-footer text-body-secondary'>
                                         <div className="form-check">
                                             <input

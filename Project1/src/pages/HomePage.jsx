@@ -1,7 +1,7 @@
 
 import useFetch from '../hooks/useFetch';
 import CourseList from '../components/CourseList.jsx';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import ProgressSummary from "../components/ProgressSummary.jsx";
 
 function HomePage() {
@@ -15,6 +15,13 @@ function HomePage() {
     // Wait for the data before passing it to CourseList
     const courses = Array.isArray(data) ? data : [];
     const [completed, setIsCompleted] = useState([]);
+    useEffect(() => {
+        const savedProgress = localStorage.getItem('completedCourses');
+
+        if (savedProgress) {
+            setIsCompleted(JSON.parse(savedProgress));
+        }
+    },[]);
 
     const toggleCourse = (courseId) => {
         const course = courses.find(

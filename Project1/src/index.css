@@ -139,3 +139,9 @@ code {
   margin-left: 0.35rem;
   vertical-align: middle;
 }
+/*Contain Buttons*/
+.containB{
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}

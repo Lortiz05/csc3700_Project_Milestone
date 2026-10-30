@@ -12,9 +12,7 @@ function App() {
             <NavBar />
 
             <main className="container my-4">
-                {/*<h1 className="text-center mb-4">*/}
-                {/*    Aurora CS Course Scheduler*/}
-                {/*</h1>*/}
+                <h2 className="mb-3">Computer Science Course Catalog</h2>
 
                 <Routes>
                     <Route path="/" element={<HomePage />} />
