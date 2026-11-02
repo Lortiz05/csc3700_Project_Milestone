@@ -7,7 +7,6 @@ dist/
 build/
 
 # Environment variables
-.env.*
 !.env.example
 
 # IDE files
