@@ -1,5 +1,6 @@
 # csc3700_Project_Milestone
 Our Project: Semester Project -- Aurora CS Course Scheduler
+
 In your terminal make sure to be in the project1 directory also pointing to the src directory before running the first command in terminal 1:
 example:
 PS C:\Users\(urName)\WebstormProjects\csc3700_Project_Milestone\Project1\src> npm install
