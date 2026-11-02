@@ -10,5 +10,3 @@ In the second terminal(terminal2):
 To start our JSON we will have to be in the Project1 directory location;
 Run command:
 npx json-server --watch db/db.json --port 3333
-
-(By the way this is a rough draft summary of "trying" to explain "README.md explains how to run the project (npm install, start JSON Server, npm run dev)." from our required materials)
