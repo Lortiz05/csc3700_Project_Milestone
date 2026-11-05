@@ -1,4 +1,5 @@
 # csc3700_Project_Milestone
+## PART 1 INSTRUCTIONS
 Our Project: Semester Project -- Aurora CS Course Scheduler
 
 In your terminal make sure to be in the project1 directory also pointing to the src directory before running the first command in terminal 1:
@@ -15,3 +16,4 @@ To start our JSON we will have to be in the Project1 directory location;
 
 Run command:
 npx json-server --watch db/db.json --port 3333
+___________________________________________________________________________________________
