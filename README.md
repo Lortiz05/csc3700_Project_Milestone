@@ -17,3 +17,5 @@ To start our JSON we will have to be in the Project1 directory location;
 Run command:
 npx json-server --watch db/db.json --port 3333
 ___________________________________________________________________________________________
+## PART 2 INSTRUCTIONS
+
