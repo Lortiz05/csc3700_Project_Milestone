@@ -1,0 +1,51 @@
+@baseUrl = http://localhost:3306/api
+
+### 1. GET all courses -- expect 200
+GET {{baseUrl}}/courses
+
+### 2. GET one course by id -- expect 200
+GET {{baseUrl}}/courses/1
+
+### 3. GET a book that does not exist -- expect 404
+GET {{baseUrl}}/courses/9999
+
+### 4. Search by title -- expect 200
+GET {{baseUrl}}/courses/search/Data
+
+### 5. POST -- create a new book -- expect 201 (note the id it returns)
+POST {{baseUrl}}/courses
+Content-Type: application/json
+
+{
+  "title": "The Alchemist",
+  "pages": 197,
+  "author": "Coelho",
+  "year": 1988,
+  "num_sold": 150
+}
+
+### 6. PUT -- update the book you just created -- replace 15 with YOUR id from step 5
+PUT {{baseUrl}}/courses/15
+Content-Type: application/json
+
+{
+  "title": "The Alchemist",
+  "pages": 197,
+  "author": "Coelho",
+  "year": 1988,
+  "num_sold": 200
+}
+
+### 7. DELETE -- remove YOUR book -- replace 15 with your id
+DELETE {{baseUrl}}/courses/15
+
+### 8. Confirm the delete -- expect 404
+GET {{baseUrl}}/courses/15
+
+### 9. POST missing required field -- expect 400
+POST {{baseUrl}}/courses
+Content-Type: application/json
+
+{
+  "title": "Incomplete Book"
+}
