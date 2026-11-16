@@ -1,17 +1,20 @@
 // util/validateCourse.js
 // Shared validation for POST and PUT -- returns an error string or null
 function validateCourse(body) {
-    const { title,id, number, description, credits } = body
+    const { title, number, credits, prerequisites } = body
 
-    if (!title || !description|| !number) {
-        return 'title, description, and number are required'
-    }
-    if(!id||isNaN(parseInt(id))){
-        return 'id must be a whole number'
+    if (!title || !number||credits===undefined||credits===null||credits==='') {
+        return 'title, number, and credits are required'
     }
 
-    if (parseInt(credits) < 0 || parseInt(credits) > 5) {
-        return 'year must be between 0 and 5'
+    if (!Number.isInteger(Number(credits))||Number(credits)<0) {
+        return 'credits must be a non-negative and a whole number'
+    }
+    if(!Array.isArray(prerequisites)){
+        return 'prerequisites must be an array'
+    }
+    if (!prerequisites.every(id=>Number.isInteger(Number(id))&& Number(id)>0)){
+        return 'each prerequisite must be a valid course ID'
     }
     return null   // null means valid
 }

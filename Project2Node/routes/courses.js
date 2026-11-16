@@ -4,98 +4,114 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../util/database')
 const validateCourse = require('../util/validateCourse')
+const {getCoursesWithPrereqs} = require('../util/courseData')
 
 // GET all courses
 router.get('/courses', async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM courses')
-        res.json(rows)
+        const courses = await getCoursesWithPrereqs(pool)
+        res.json(courses)
     } catch (err) {
-        res.status(500).json({ error: err.message })
+        res.status(500).json({error: err.message})
     }
 })
 
 // GET search by title -- must come BEFORE /books/:id
 router.get('/courses/search/:term', async (req, res) => {
     try {
-        const [rows] = await pool.query(
-            'SELECT * FROM courses WHERE title LIKE ?',
-            [`%${req.params.term}%`]
-        )
-        res.json(rows)
+        const course = await getCoursesWithPrereqs(pool)
+        res.json(course)
     } catch (err) {
-        res.status(500).json({ error: err.message })
+        res.status(500).json({error: err.message})
     }
 })
 
 // GET single course by id
 router.get('/courses/:id', async (req, res) => {
     try {
-        const [rows] = await pool.query(
-            'SELECT * FROM courses WHERE id = ?',
-            [req.params.id]
-        )
-        if (rows.length === 0) return res.status(404).json({ error: 'Course not found' })
-        res.json(rows[0])
+        const course = await getCoursesWithPrereqs(pool, req.params.id)
+        if (!course) {
+            return res.status(404).json({error: 'Course not found'})
+        }
+        res.json(course)
     } catch (err) {
-        res.status(500).json({ error: err.message })
+        res.status(500).json({error: err.message})
     }
 })
 
-// POST -- create a new book
+// POST -- create a new course
 router.post('/courses', async (req, res) => {
     const error = validateCourse(req.body)
-    if (error) return res.status(400).json({ error })
+    if (error) return res.status(400).json({error})
 
-    const { title, pages, author, year, num_sold } = req.body
+    const {title, number, description, credits, prerequisites} = req.body
     try {
         const [result] = await pool.query(
-            'INSERT INTO courses (title, number, description, credits) VALUES (?, ?, ?, ?, ?)',
-            [title, parseInt(credits), author, parseInt(year), num_sold || 0]
+            'INSERT INTO courses (title, number, description, credits) VALUES (?, ?, ?, ?)',
+            [title, number, description, Number(credits) || 0]
         )
-        const [rows] = await pool.query(
-            'SELECT * FROM courses WHERE id = ?', [result.insertId]
-        )
-        res.status(201).json(rows[0])
+        for (const prereqId of prerequisites) {
+            await pool.query(
+                'INSERT INTO prerequisites (course_id, prereq_id) VALUES (?, ?)',
+                [result.insertId, prereqId]
+            )
+
+        }
+        const newCourse = await getCoursesWithPrereqs(pool, result.insertId)
+        res.status(201).json(newCourse)
+
     } catch (err) {
-        res.status(500).json({ error: err.message })
+        res.status(500).json({error: err.message})
     }
 })
 
-// PUT -- update an existing book
+// PUT -- change/update an existing course
 router.put('/courses/:id', async (req, res) => {
     const error = validateCourse(req.body)
-    if (error) return res.status(400).json({ error })
+    if (error) return res.status(400).json({error})
 
-    const { title, pages, author, year, num_sold } = req.body
+    const {title, number, description, credits, prerequisites} = req.body
     const id = parseInt(req.params.id)
+
     try {
-        const [result] = await pool.query(
-            'UPDATE books SET title=?, pages=?, author=?, year=?, num_sold=? WHERE id=?',
-            [title, parseInt(pages), author, parseInt(year), parseInt(num_sold), id]
+        // This already does the check instead of using an 'if' from our expected format in class.
+        const existingCourse = await getCoursesWithPrereqs(pool, id)
+        if (!existingCourse) {
+            return res.status(404).json({error: 'Course not found'})
+        }
+
+        await pool.query(
+            'UPDATE courses SET title = ?, number =?, description = ?, credits =? WHERE id = ?',
+            [title, number, description, Number(credits), id]
         )
-        if (result.affectedRows === 0) return res.status(404).json({ error: 'Course not found' })
-        const [rows] = await pool.query(
-            'SELECT * FROM books WHERE id = ?', [id]
+        await pool.query(
+            'DELETE FROM prerequisites WHERE course_id = ?',
+            [id]
         )
-        res.json(rows[0])
+        for (const prereqId of prerequisites) {
+            await pool.query(
+                'INSERT INTO prerequisites (course_id, prereq_id) VALUES (?,?)',
+                [id, prereqId]
+            )
+        }
+        const updatedCourse = await getCoursesWithPrereqs(pool, id)
+        res.status(200).json(updatedCourse)
+
     } catch (err) {
-        res.status(500).json({ error: err.message })
+        res.status(500).json({error: err.message})
     }
 })
 
-// DELETE -- remove a book
-router.delete('/books/:id', async (req, res) => {
+// DELETE -- remove a course
+router.delete('/courses/:id', async (req, res) => {
     const id = parseInt(req.params.id)
     try {
-        const [rows] = await pool.query(
-            'SELECT * FROM books WHERE id = ?', [id]
-        )
-        if (rows.length === 0) return res.status(404).json({ error: 'Course not found' })
-        await pool.query('DELETE FROM books WHERE id = ?', [id])
-        res.json(rows[0])
+        const course = await getCoursesWithPrereqs(pool,id)
+        if (!course) return res.status(404).json({error: 'Course not found'})
+        await pool.query('DELETE FROM courses WHERE id = ?', [id])
+        res.json(course)
     } catch (err) {
-        res.status(500).json({ error: err.message })
+        res.status(500).json({error: err.message})
     }
 })
 
