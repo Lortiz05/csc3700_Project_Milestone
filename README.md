@@ -19,4 +19,8 @@ npx json-server --watch db/db.json --port 3333
 ___________________________________________________________________________________________
 ## PART 2 INSTRUCTIONS
 
-(In Progress...)
+In the terminal be sure to have the correct path, Example:
+
+PS C:\Users\(urName)\WebstormProjects\csc3700_Project_Milestone\Project2Node
+
+Next step would be to install our node_modules and to be sure our package.json exists.
